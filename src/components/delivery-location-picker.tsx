@@ -13,6 +13,13 @@ import { t } from '@/i18n';
 import { currentPosition } from '@/services/location';
 import { setDeliveryLocation } from '@/state/delivery-location';
 import { COORDINATE_INPUT_STYLE, parseCoordinate, type DeliveryLocation } from '@/utils/delivery-location';
+import { parseFixedLocation } from '@/utils/delivery-location';
+
+/** Example coordinates in the fields: the build's fixed location when one is set, else central Cairo. */
+const FIXED_EXAMPLE = parseFixedLocation(process.env.EXPO_PUBLIC_FIXED_LOCATION);
+const EXAMPLE = FIXED_EXAMPLE
+  ? { latitude: FIXED_EXAMPLE.latitude.toFixed(4), longitude: FIXED_EXAMPLE.longitude.toFixed(4) }
+  : { latitude: '30.0444', longitude: '31.2357' };
 
 /**
  * "Where should we deliver?" (#54), before the restaurant list: the device's location, or a pin on the
@@ -82,10 +89,10 @@ export function DeliveryLocationPicker({ current, onCancel }: { current: Deliver
       ) : null}
       <View style={styles.coordinates}>
         <View style={styles.flex}>
-          <FormTextInput testID="location-latitude" label={t('Latitude')} keyboardType="numbers-and-punctuation" value={latitude} onChangeText={setLatitude} placeholder="30.0444" style={COORDINATE_INPUT_STYLE} />
+          <FormTextInput testID="location-latitude" label={t('Latitude')} keyboardType="numbers-and-punctuation" value={latitude} onChangeText={setLatitude} placeholder={EXAMPLE.latitude} style={COORDINATE_INPUT_STYLE} />
         </View>
         <View style={styles.flex}>
-          <FormTextInput testID="location-longitude" label={t('Longitude')} keyboardType="numbers-and-punctuation" value={longitude} onChangeText={setLongitude} placeholder="31.2357" style={COORDINATE_INPUT_STYLE} />
+          <FormTextInput testID="location-longitude" label={t('Longitude')} keyboardType="numbers-and-punctuation" value={longitude} onChangeText={setLongitude} placeholder={EXAMPLE.longitude} style={COORDINATE_INPUT_STYLE} />
         </View>
       </View>
       {touched && pinError ? <InlineAlert message={pinError} testID="location-pin-error" /> : null}
